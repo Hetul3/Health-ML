@@ -50,11 +50,10 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Add the following styles for the top navbar */
 .top-navbar {
-  background-color: #f0f0f0; /* Same as .nav-container background color */
+  background-color: #f0f0f0; 
   display: flex;
-  justify-content: space-between; /* Align links to the right */
+  justify-content: space-between; 
   padding: 10px;
   align-items: center; 
   justify-content: center;
