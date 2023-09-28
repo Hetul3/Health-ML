@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 
 function HeartDisease() {
   const [inputValuesH, setInputValues] = useState({
@@ -154,7 +155,26 @@ function HeartDisease() {
       </select>
 
       <p>Number of Major Vessels Colored by Flouroscopy</p>
+      <input
+        type="number"
+        name="h_ca"
+        placeholder="Enter a value"
+        value={inputValuesH.h_ca}
+        onChange={handleInputChange}
+        min="0"
+        max="3"
+      />
+
       <p>Thal</p>
+      <select
+        name="h_thal"
+        value={inputValuesH.h_thal}
+        onChange={handleInputChange}
+      >
+        <option value={3}>Normal</option>
+        <option value={6}>Fixed Defect</option>
+        <option value={7}>Reversible Defect</option>
+      </select>
     </div>
   );
 }
