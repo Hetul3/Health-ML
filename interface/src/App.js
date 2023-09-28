@@ -1,9 +1,9 @@
 import React from "react";
-import "./App.css";
+import "./index.css";
 
 function App() {
   return (
-    <nav className="navbar">
+    <nav className="top-navbar"> 
       <ul className="nav-list">
         <li className="nav-item">
           <a href="/" className="nav-link">
@@ -11,17 +11,17 @@ function App() {
           </a>
         </li>
         <li className="nav-item">
-          <a href="/hd" className="nav-link">
+          <a href="/hd.html" className="nav-link">
             Heart Disease
           </a>
         </li>
         <li className="nav-item">
-          <a href="/ob" className="nav-link">
+          <a href="/ob.html" className="nav-link">
             Obesity Level
           </a>
         </li>
         <li className="nav-item">
-          <a href="/bc" className="nav-link">
+          <a href="/bc.html" className="nav-link">
             Breast Cancer Recurrence
           </a>
         </li>

@@ -1,17 +1,35 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
+import ReactDOM from "react-dom";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
+import Home from "./Home"; // Import your other component files
+import HeartDisease from "./HeartDisease";
+import ObesityLevel from "./ObesityLevel";
+import BreastCancerRecurrence from "./BreastCancerRecurrence";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
+const rootElement = document.getElementById("root");
+
+const currentPath = window.location.pathname;
+
+let componentToRender;
+
+switch (currentPath) {
+  case "/hd.html":
+    componentToRender = <HeartDisease />;
+    break;
+  case "/ob.html":
+    componentToRender = <ObesityLevel />;
+    break;
+  case "/bc.html":
+    componentToRender = <BreastCancerRecurrence />;
+    break;
+  default:
+    componentToRender = <Home />;
+}
+
+ReactDOM.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+    {componentToRender}
+  </React.StrictMode>,
+  rootElement
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
