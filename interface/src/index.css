@@ -5,9 +5,71 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-code {
+ }
+ 
+ 
+ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
+ }
+ 
+ 
+ 
+ 
+ .nav-container {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 10px;
+  display: inline-block;
+  margin-top: 20px;
+ }
+ 
+ 
+ .nav-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+ }
+ 
+ 
+ .nav-item {
+  margin-right: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+ }
+ 
+ 
+ .nav-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  padding: 8px 16px;
+  display: inline-block;
+  transition: 0.2s;
+ 
+ 
+  &:hover {
+    transition: 0.2s;
+    color: #007bff;
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+ }
+ 
+ 
+ 
+ 
+ .home-container {
+  text-align: center;
+  margin-top: 100px;
+ }
+ 
+ 
+ 
+ 
+ .home-header-text {
+  font-size: 24px;
+  color: #333;
+  font-weight: bold;
+ }
+ 
