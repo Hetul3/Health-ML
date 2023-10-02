@@ -21,13 +21,37 @@ function ObesityLevel() {
     o_mtrans: 0,
   });
 
+  // Scale a value to a 0-5 range based on min and max values
+  const scaleTo05 = (value, minValue, maxValue) => {
+    const scaledValue = ((value - minValue) / (maxValue - minValue)) * 5;
+    return Math.min(Math.max(scaledValue, 0), 5);
+  };
+
+  const scaleAge = (value) => scaleTo05(value, 14.0, 61.0);
+  const scaleWeight = (value) => scaleTo05(value, 39.0, 173.0);
+  const scaleHeight = (value) => scaleTo05(value, 1.45, 1.98);
+
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
+  
+    let scaledValue = value; 
+  
+    if (type === "number") {
+      if (name === "o_age") {
+        scaledValue = scaleAge(parseFloat(value));
+      } else if (name === "o_weight") {
+        scaledValue = scaleWeight(parseFloat(value));
+      } else if (name === "o_height") {
+        scaledValue = scaleHeight(parseFloat(value));
+      }
+    }
+  
     setInputValues((prevValues) => ({
       ...prevValues,
-      [name]: type === "number" ? parseFloat(value) : value,
+      [name]: scaledValue,
     }));
   };
+  
 
   return (
     <div>
@@ -213,7 +237,6 @@ function ObesityLevel() {
         <option value={3}>{"Public Transport"}</option>
         <option value={4}>{"Walking"}</option>
       </select>
-
     </div>
   );
 }
