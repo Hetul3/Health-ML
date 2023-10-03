@@ -52,6 +52,29 @@ function BreastCancerRecurrence() {
     }));
   };
 
+  const sendInputs = () => {
+    // Create a JSON representation of the inputValuesB object
+    const jsonData = JSON.stringify(inputValuesB);
+  
+    // Make a POST request to your Django server
+    fetch('/api/endpoint', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the response from the server
+        console.log('Response from server:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+  
+
   return (
     <div>
       <h1>Breast Cancer Recurrence Page</h1>
@@ -153,6 +176,8 @@ function BreastCancerRecurrence() {
         <option value={0}>No</option>
         <option value={1}>Yes</option>
       </select>
+
+      <button onClick={sendInputs}>Send Data</button>
     </div>
   );
 }
