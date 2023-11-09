@@ -21,6 +21,52 @@ function ObesityLevel() {
     o_mtrans: 0,
   });
 
+  const handleSubmit = async () => {
+    // Create an object to hold the data you want to send
+    const dataToSend = {
+      o_sex: inputValuesO.o_sex,
+      o_age: inputValuesO.o_age,
+      o_weight: inputValuesO.o_weight,
+      o_height: inputValuesO.o_height,
+      o_family_history: inputValuesO.o_family_history,
+      o_favc: inputValuesO.o_favc,
+      o_fcvc: inputValuesO.o_fcvc,
+      o_ncp: inputValuesO.o_ncp,
+      o_smoke: inputValuesO.o_smoke,
+      o_caec: inputValuesO.o_caec,
+      o_ch20: inputValuesO.o_ch20,
+      o_calc: inputValuesO.o_calc,
+      o_scc: inputValuesO.o_scc,
+      o_faf: inputValuesO.o_faf,
+      o_tue: inputValuesO.o_tue,
+      o_mtrans: inputValuesO.o_mtrans,
+    };
+
+    try {
+      const response = await fetch("/api/obesity-level/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        response.json().then((data) => {
+          console.log("Success:", data.message);
+        });
+      } else {
+        // Handle any error response from the backend
+        // You can access the response data using response.json()
+        const errorData = await response.json();
+        console.error("Error:", errorData);
+      }
+    } catch (error) {
+      // Handle any network or fetch-related errors
+      console.error("Fetch Error:", error);
+    }
+  };
+
   // Scale a value to a 0-5 range based on min and max values
   const scaleTo05 = (value, minValue, maxValue) => {
     const scaledValue = ((value - minValue) / (maxValue - minValue)) * 5;
@@ -33,9 +79,9 @@ function ObesityLevel() {
 
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
-  
-    let scaledValue = value; 
-  
+
+    let scaledValue = value;
+
     if (type === "number") {
       if (name === "o_age") {
         scaledValue = scaleAge(parseFloat(value));
@@ -45,13 +91,12 @@ function ObesityLevel() {
         scaledValue = scaleHeight(parseFloat(value));
       }
     }
-  
+
     setInputValues((prevValues) => ({
       ...prevValues,
       [name]: scaledValue,
     }));
   };
-  
 
   return (
     <div>
@@ -237,6 +282,8 @@ function ObesityLevel() {
         <option value={3}>{"Public Transport"}</option>
         <option value={4}>{"Walking"}</option>
       </select>
+
+      <button onClick={handleSubmit}>Submit</button>
     </div>
   );
 }
