@@ -20,6 +20,7 @@ function ObesityLevel() {
     o_tue: 0.0,
     o_mtrans: 0,
   });
+  const [predictedLabel, setPredictedLabel] = useState(null);
 
   const handleSubmit = async () => {
     // Create an object to hold the data you want to send
@@ -52,17 +53,13 @@ function ObesityLevel() {
       });
 
       if (response.ok) {
-        response.json().then((data) => {
-          console.log("Success:", data.message);
-        });
+        const data = await response.json();
+        setPredictedLabel(data.predicted_label); // Set the predicted label in state
       } else {
-        // Handle any error response from the backend
-        // You can access the response data using response.json()
         const errorData = await response.json();
         console.error("Error:", errorData);
       }
     } catch (error) {
-      // Handle any network or fetch-related errors
       console.error("Fetch Error:", error);
     }
   };
@@ -284,6 +281,7 @@ function ObesityLevel() {
       </select>
 
       <button onClick={handleSubmit}>Submit</button>
+      <p>Predicted Obesity Level: {predictedLabel}</p>
     </div>
   );
 }
