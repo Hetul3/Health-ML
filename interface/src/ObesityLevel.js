@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function ObesityLevel() {
   const [inputValuesO, setInputValues] = useState({
@@ -21,9 +21,65 @@ function ObesityLevel() {
     o_mtrans: 0,
   });
   const [predictedLabel, setPredictedLabel] = useState(null);
+  const [data, setData] = useState({});
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/members");
+      const jsonData = await response.json();
+      setData(jsonData);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // const handleSubmit = async () => {
+  //   // Create an object to hold the data you want to send
+  //   const dataToSend = {
+  //     o_sex: inputValuesO.o_sex,
+  //     o_age: inputValuesO.o_age,
+  //     o_weight: inputValuesO.o_weight,
+  //     o_height: inputValuesO.o_height,
+  //     o_family_history: inputValuesO.o_family_history,
+  //     o_favc: inputValuesO.o_favc,
+  //     o_fcvc: inputValuesO.o_fcvc,
+  //     o_ncp: inputValuesO.o_ncp,
+  //     o_smoke: inputValuesO.o_smoke,
+  //     o_caec: inputValuesO.o_caec,
+  //     o_ch20: inputValuesO.o_ch20,
+  //     o_calc: inputValuesO.o_calc,
+  //     o_scc: inputValuesO.o_scc,
+  //     o_faf: inputValuesO.o_faf,
+  //     o_tue: inputValuesO.o_tue,
+  //     o_mtrans: inputValuesO.o_mtrans,
+  //   };
+
+  //   try {
+  //     const response = await fetch("/api/obesity-level/", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(dataToSend),
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setPredictedLabel(data.predicted_label); // Set the predicted label in state
+  //     } else {
+  //       const errorData = await response.json();
+  //       console.error("Error:", errorData);
+  //     }
+  //   } catch (error) {
+  //     console.error("Fetch Error:", error);
+  //   }
+  // };
 
   const handleSubmit = async () => {
-    // Create an object to hold the data you want to send
     const dataToSend = {
       o_sex: inputValuesO.o_sex,
       o_age: inputValuesO.o_age,
@@ -44,27 +100,32 @@ function ObesityLevel() {
     };
 
     try {
-      const response = await fetch("/api/obesity-level/", {
+      const response = await fetch("http://127.0.0.1:5000/members", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(dataToSend),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
-        setPredictedLabel(data.predicted_label); // Set the predicted label in state
+  
+        if (data.message) {
+          console.log("Success:", data.message);
+        } else {
+          console.error("Error: Unexpected response format");
+        }
       } else {
         const errorData = await response.json();
         console.error("Error:", errorData);
       }
     } catch (error) {
-      console.error("Fetch Error:", error);
+      console.error("Fetch Error:", error.message);
     }
   };
 
-  // Scale a value to a 0-5 range based on min and max values
+  // // Scale a value to a 0-5 range based on min and max values
   const scaleTo05 = (value, minValue, maxValue) => {
     const scaledValue = ((value - minValue) / (maxValue - minValue)) * 5;
     return Math.min(Math.max(scaledValue, 0), 5);
@@ -99,6 +160,7 @@ function ObesityLevel() {
     <div>
       {/* could code in a quick converter for people */}
       <h1>Obesity Level Page</h1>
+      <h1>{data.members}</h1>
       <p>This is the Obesity Level page content.</p>
 
       <p>What Is Your Sex</p>
