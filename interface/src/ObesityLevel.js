@@ -20,7 +20,6 @@ function ObesityLevel() {
     o_tue: 0.0,
     o_mtrans: 0,
   });
-
   const [predictedLabel, setPredictedLabel] = useState(10);
   const [data, setData] = useState({});
   useEffect(() => {
@@ -33,7 +32,9 @@ function ObesityLevel() {
       const jsonData = await response.json();
       setData(jsonData);
 
+      // Check if the predicted_class exists in the response
       if (jsonData.predicted_class !== undefined) {
+        // Map predicted class to label
         const classToLabel = {
           0: "Underweight",
           1: "Normal Weight",
@@ -44,8 +45,11 @@ function ObesityLevel() {
           6: "Overweight 2",
           10: "",
         };
+
+        // Set the corresponding label based on the predicted class
         const newPredictedLabel = classToLabel[jsonData.predicted_class];
 
+        // Set the predictedLabel state
         setPredictedLabel(newPredictedLabel);
       }
     } catch (error) {
@@ -73,7 +77,7 @@ function ObesityLevel() {
       o_mtrans: inputValuesO.o_mtrans,
     };
 
-    console.log("Data to Send", dataToSend);
+    console.log("Data to Send:", dataToSend);
 
     try {
       const response = await fetch("http://127.0.0.1:5000/members", {
@@ -83,12 +87,13 @@ function ObesityLevel() {
         },
         body: JSON.stringify(dataToSend),
       });
+
       if (response.ok) {
         const data = await response.json();
 
         if (data.message) {
-          console.log("Success", data.message);
-          console.log("Predicted Class", data.predicted_class);
+          console.log("Success:", data.message);
+          console.log("Predicted Class:", data.predicted_class); // Log predicted_class
 
           const classToLabel = {
             0: "Underweight",
@@ -103,19 +108,19 @@ function ObesityLevel() {
 
           const newPredictedLabel = classToLabel[data.predicted_class];
 
+          // Set the predictedLabel state
           setPredictedLabel(newPredictedLabel);
         } else {
-          console.error("Error: Unexcepted response format");
+          console.error("Error: Unexpected response format");
         }
       } else {
         const errorData = await response.json();
-        console.error("Error", errorData);
+        console.error("Error:", errorData);
       }
     } catch (error) {
       console.error("Fetch Error:", error.message);
     }
   };
-
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
 
@@ -146,8 +151,8 @@ function ObesityLevel() {
       {/* could code in a quick converter for people */}
       <h1>Obesity Level Page</h1>
       <h1>{data.members}</h1>
-      <p>This is the Heart Disease page content.</p>
-      <p>Predicted class: {predictedLabel}</p>
+      <p>This is the Obesity Level page content.</p>
+      <p>Predicted Obesity Level: {predictedLabel}</p>
       <p>This is the Obesity Level page content.</p>
 
       <p>What Is Your Sex</p>
@@ -169,6 +174,7 @@ function ObesityLevel() {
         onChange={handleInputChange}
         min="18"
         max="100"
+        step="1"
       />
 
       <p>Input Your Weight in kg</p>
@@ -180,6 +186,7 @@ function ObesityLevel() {
         onChange={handleInputChange}
         min="30"
         max="250"
+        step="1"
       />
 
       <p>What is Your Height in meters</p>
@@ -190,7 +197,7 @@ function ObesityLevel() {
         placeholder="Enter a value"
         value={inputValuesO.o_height}
         onChange={handleInputChange}
-        min="0"
+        min="1"
         max="2.5"
       />
 
@@ -220,8 +227,8 @@ function ObesityLevel() {
         value={inputValuesO.o_fcvc}
         onChange={handleInputChange}
       >
-        <option value={0}>No</option>
-        <option value={1}>Yes</option>
+        <option value={2}>No</option>
+        <option value={3}>Yes</option>
       </select>
 
       <p>What are Your Number of Main Meals</p>
@@ -308,6 +315,7 @@ function ObesityLevel() {
         name="o_tue"
         value={inputValuesO.o_tue}
         onChange={handleInputChange}
+        step="0.5"
       >
         <option value={0.0}>{"0-2 Hours"}</option>
         <option value={0.5}>{"3 Hours"}</option>

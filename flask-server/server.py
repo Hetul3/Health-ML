@@ -18,7 +18,7 @@ b_model = load_model(b_model_path)
 
 received_data = {"members": "Hello Testing"}
 recieved_data_h = {"members2": "Hello Testing again"}
-recieved_data_b = {"members3": "Hellow Testing again"}
+recieved_data_b = {"members3": "Hellow Testing again again"}
 
 def scale_to_range(value, min_value, max_value, target_min, target_max):
     scaled_value = ((value - min_value) / (max_value - min_value)) * (target_max - target_min) + target_min
@@ -106,17 +106,15 @@ def members2():
             
         except Exception as e:
             return jsonify({"error": str(e)}), 400 
-        
-        
+            
 @app.route('/members3', methods=['GET', 'POST'])
 def members3():
     if request.method == 'GET':
         return jsonify(recieved_data_b)
-    
+
     elif request.method == 'POST':
         try:
             request_data = request.get_json()
-            
             
             b_age = request_data.get('b_age', 0)
             b_menopause = request_data.get('b_menopause', 0)
@@ -133,7 +131,7 @@ def members3():
             b_inv_nodes = b_inv_nodes/3
             
             input_data_b = np.array([[b_age, b_menopause, b_tumor_size, b_inv_nodes, b_node_cap, b_deg_malig, b_breast, b_breast_quad, b_irradiat]])
-            predictions = hd_model.predict(input_data_b)
+            predictions = b_model.predict(input_data_b)
             predicted_class = int(np.argmax(predictions, axis=1)[0])
             
             received_data.update({"predicted_class": predicted_class})
@@ -142,11 +140,8 @@ def members3():
                 "message": "Data received and processed successfully b",
                 "predicted_class": predicted_class
             })
-            
         except Exception as e:
-            return jsonify({"error": str(e)}), 400 
-            
-            
+            return jsonify({"error": str(e)}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)

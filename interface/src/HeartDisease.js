@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function HeartDisease() {
   const [inputValuesH, setInputValues] = useState({
@@ -17,6 +17,7 @@ function HeartDisease() {
     h_ca: 0,
     h_thal: 0,
   });
+
   const [predictedLabel, setPredictedLabel] = useState(10);
   const [data, setData] = useState({});
   useEffect(() => {
@@ -59,7 +60,6 @@ function HeartDisease() {
       h_ca: inputValuesH.h_ca,
       h_thal: inputValuesH.h_thal,
     };
-
     console.log("Data to Send", dataToSend);
 
     try {
@@ -70,6 +70,7 @@ function HeartDisease() {
         },
         body: JSON.stringify(dataToSend),
       });
+
       if (response.ok) {
         const data = await response.json();
 
@@ -86,7 +87,7 @@ function HeartDisease() {
 
           setPredictedLabel(newPredictedLabel);
         } else {
-          console.error("Error: Unexcepted response format");
+          console.error("Error: Unexpected response format");
         }
       } else {
         const errorData = await response.json();
@@ -101,10 +102,9 @@ function HeartDisease() {
     const { name, value, type } = event.target;
 
     let parsedValue;
-
     if (type === "number") {
       parsedValue =
-        name === "h_oldpeak" ? parseFloat(value) : parseInt(value, 10);
+        name === 'h_oldpeak' ? parseFloat(value) : parseInt(value, 10);
     } else {
       parsedValue = parseInt(value, 10);
     }
@@ -121,7 +121,6 @@ function HeartDisease() {
       <h1>{data.members}</h1>
       <p>This is the Heart Disease page content.</p>
       <p>Predicted class: {predictedLabel}</p>
-      <p>This is the Heart Disease page content.</p>
 
       <p>Input your Age</p>
       <input
@@ -267,6 +266,7 @@ function HeartDisease() {
         <option value={6}>Fixed Defect</option>
         <option value={7}>Reversible Defect</option>
       </select>
+
       <button onClick={handleSubmit}>Submit</button>
       <p>Predicted Obesity Level: {predictedLabel}</p>
     </div>
