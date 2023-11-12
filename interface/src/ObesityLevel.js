@@ -146,6 +146,8 @@ function ObesityLevel() {
       {/* could code in a quick converter for people */}
       <h1>Obesity Level Page</h1>
       <h1>{data.members}</h1>
+      <p>This is the Heart Disease page content.</p>
+      <p>Predicted class: {predictedLabel}</p>
       <p>This is the Obesity Level page content.</p>
 
       <p>What Is Your Sex</p>
