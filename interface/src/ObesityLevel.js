@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function ObesityLevel() {
   const [inputValuesO, setInputValues] = useState({
@@ -20,43 +20,139 @@ function ObesityLevel() {
     o_tue: 0.0,
     o_mtrans: 0,
   });
+  const [predictedLabel, setPredictedLabel] = useState(10);
+  const [data, setData] = useState({});
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  // Scale a value to a 0-5 range based on min and max values
-  const scaleTo05 = (value, minValue, maxValue) => {
-    const scaledValue = ((value - minValue) / (maxValue - minValue)) * 5;
-    return Math.min(Math.max(scaledValue, 0), 5);
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/members");
+      const jsonData = await response.json();
+      setData(jsonData);
+
+      // Check if the predicted_class exists in the response
+      if (jsonData.predicted_class !== undefined) {
+        // Map predicted class to label
+        const classToLabel = {
+          0: "Underweight",
+          1: "Normal Weight",
+          2: "Obesity 1",
+          3: "Obesity 2",
+          4: "Obesity 3",
+          5: "Overweight 1",
+          6: "Overweight 2",
+          10: "",
+        };
+
+        // Set the corresponding label based on the predicted class
+        const newPredictedLabel = classToLabel[jsonData.predicted_class];
+
+        // Set the predictedLabel state
+        setPredictedLabel(newPredictedLabel);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const scaleAge = (value) => scaleTo05(value, 14.0, 61.0);
-  const scaleWeight = (value) => scaleTo05(value, 39.0, 173.0);
-  const scaleHeight = (value) => scaleTo05(value, 1.45, 1.98);
+  const handleSubmit = async () => {
+    const dataToSend = {
+      o_sex: inputValuesO.o_sex,
+      o_age: inputValuesO.o_age,
+      o_weight: inputValuesO.o_weight,
+      o_height: inputValuesO.o_height,
+      o_family_history: inputValuesO.o_family_history,
+      o_favc: inputValuesO.o_favc,
+      o_fcvc: inputValuesO.o_fcvc,
+      o_ncp: inputValuesO.o_ncp,
+      o_smoke: inputValuesO.o_smoke,
+      o_caec: inputValuesO.o_caec,
+      o_ch20: inputValuesO.o_ch20,
+      o_calc: inputValuesO.o_calc,
+      o_scc: inputValuesO.o_scc,
+      o_faf: inputValuesO.o_faf,
+      o_tue: inputValuesO.o_tue,
+      o_mtrans: inputValuesO.o_mtrans,
+    };
 
+    console.log("Data to Send:", dataToSend);
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/members", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.message) {
+          console.log("Success:", data.message);
+          console.log("Predicted Class:", data.predicted_class); // Log predicted_class
+
+          const classToLabel = {
+            0: "Underweight",
+            1: "Normal Weight",
+            2: "Obesity 1",
+            3: "Obesity 2",
+            4: "Obesity 3",
+            5: "Overweight 1",
+            6: "Overweight 2",
+            10: "",
+          };
+
+          const newPredictedLabel = classToLabel[data.predicted_class];
+
+          // Set the predictedLabel state
+          setPredictedLabel(newPredictedLabel);
+        } else {
+          console.error("Error: Unexpected response format");
+        }
+      } else {
+        const errorData = await response.json();
+        console.error("Error:", errorData);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error.message);
+    }
+  };
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
-  
-    let scaledValue = value; 
-  
+
+    let parsedValue;
+
     if (type === "number") {
-      if (name === "o_age") {
-        scaledValue = scaleAge(parseFloat(value));
-      } else if (name === "o_weight") {
-        scaledValue = scaleWeight(parseFloat(value));
-      } else if (name === "o_height") {
-        scaledValue = scaleHeight(parseFloat(value));
-      }
+      parsedValue =
+        name === "o_age" ||
+        name === "o_weight" ||
+        name === "o_height" ||
+        name === "o_ch20" ||
+        name === "o_caec" ||
+        name === "o_tue"
+          ? parseFloat(value)
+          : parseInt(value, 10);
+    } else {
+      parsedValue = parseInt(value, 10);
     }
-  
+
     setInputValues((prevValues) => ({
       ...prevValues,
-      [name]: scaledValue,
+      [name]: parsedValue,
     }));
   };
-  
 
   return (
     <div>
       {/* could code in a quick converter for people */}
       <h1>Obesity Level Page</h1>
+      <h1>{data.members}</h1>
+      <p>This is the Obesity Level page content.</p>
+      <p>Predicted Obesity Level: {predictedLabel}</p>
       <p>This is the Obesity Level page content.</p>
 
       <p>What Is Your Sex</p>
@@ -78,6 +174,7 @@ function ObesityLevel() {
         onChange={handleInputChange}
         min="18"
         max="100"
+        step="1"
       />
 
       <p>Input Your Weight in kg</p>
@@ -89,6 +186,7 @@ function ObesityLevel() {
         onChange={handleInputChange}
         min="30"
         max="250"
+        step="1"
       />
 
       <p>What is Your Height in meters</p>
@@ -99,7 +197,7 @@ function ObesityLevel() {
         placeholder="Enter a value"
         value={inputValuesO.o_height}
         onChange={handleInputChange}
-        min="0"
+        min="1"
         max="2.5"
       />
 
@@ -129,8 +227,8 @@ function ObesityLevel() {
         value={inputValuesO.o_fcvc}
         onChange={handleInputChange}
       >
-        <option value={0}>No</option>
-        <option value={1}>Yes</option>
+        <option value={2}>No</option>
+        <option value={3}>Yes</option>
       </select>
 
       <p>What are Your Number of Main Meals</p>
@@ -217,6 +315,7 @@ function ObesityLevel() {
         name="o_tue"
         value={inputValuesO.o_tue}
         onChange={handleInputChange}
+        step="0.5"
       >
         <option value={0.0}>{"0-2 Hours"}</option>
         <option value={0.5}>{"3 Hours"}</option>
@@ -237,6 +336,9 @@ function ObesityLevel() {
         <option value={3}>{"Public Transport"}</option>
         <option value={4}>{"Walking"}</option>
       </select>
+
+      <button onClick={handleSubmit}>Submit</button>
+      <p>Predicted Obesity Level: {predictedLabel}</p>
     </div>
   );
 }

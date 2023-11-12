@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function HeartDisease() {
   const [inputValuesH, setInputValues] = useState({
@@ -18,18 +18,109 @@ function HeartDisease() {
     h_thal: 0,
   });
 
+  const [predictedLabel, setPredictedLabel] = useState(10);
+  const [data, setData] = useState({});
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/members2");
+      const jsonData = await response.json();
+      setData(jsonData);
+
+      if (jsonData.predicted_class !== undefined) {
+        const classToLabel = {
+          0: "<50% narrowing",
+          1: ">50% narrowing",
+        };
+        const newPredictedLabel = classToLabel[jsonData.predicted_class];
+
+        setPredictedLabel(newPredictedLabel);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const dataToSend = {
+      h_age: inputValuesH.h_age,
+      h_sex: inputValuesH.h_sex,
+      h_cp: inputValuesH.h_cp,
+      h_trestbps: inputValuesH.h_trestbps,
+      h_chol: inputValuesH.h_chol,
+      h_fbs: inputValuesH.h_fbs,
+      h_restecg: inputValuesH.h_restecg,
+      h_thalach: inputValuesH.h_thalach,
+      h_exang: inputValuesH.h_exang,
+      h_oldpeak: inputValuesH.h_oldpeak,
+      h_slope: inputValuesH.h_slope,
+      h_ca: inputValuesH.h_ca,
+      h_thal: inputValuesH.h_thal,
+    };
+    console.log("Data to Send", dataToSend);
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/members2", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.message) {
+          console.log("Success", data.message);
+          console.log("Predicted Class", data.predicted_class);
+
+          const classToLabel = {
+            0: "<50% narrowing",
+            1: ">50% narrowing",
+          };
+
+          const newPredictedLabel = classToLabel[data.predicted_class];
+
+          setPredictedLabel(newPredictedLabel);
+        } else {
+          console.error("Error: Unexpected response format");
+        }
+      } else {
+        const errorData = await response.json();
+        console.error("Error", errorData);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error.message);
+    }
+  };
+
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
+
+    let parsedValue;
+    if (type === "number") {
+      parsedValue =
+        name === 'h_oldpeak' ? parseFloat(value) : parseInt(value, 10);
+    } else {
+      parsedValue = parseInt(value, 10);
+    }
+
     setInputValues((prevValues) => ({
       ...prevValues,
-      [name]: type === "number" ? parseFloat(value) : value,
+      [name]: parsedValue,
     }));
   };
 
   return (
     <div>
       <h1>Heart Disease Page</h1>
+      <h1>{data.members}</h1>
       <p>This is the Heart Disease page content.</p>
+      <p>Predicted class: {predictedLabel}</p>
 
       <p>Input your Age</p>
       <input
@@ -175,6 +266,9 @@ function HeartDisease() {
         <option value={6}>Fixed Defect</option>
         <option value={7}>Reversible Defect</option>
       </select>
+
+      <button onClick={handleSubmit}>Submit</button>
+      <p>Predicted Obesity Level: {predictedLabel}</p>
     </div>
   );
 }
