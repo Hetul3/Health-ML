@@ -20,7 +20,8 @@ function ObesityLevel() {
     o_tue: 0.0,
     o_mtrans: 0,
   });
-  const [predictedLabel, setPredictedLabel] = useState(null);
+
+  const [predictedLabel, setPredictedLabel] = useState(10);
   const [data, setData] = useState({});
   useEffect(() => {
     fetchData();
@@ -31,53 +32,26 @@ function ObesityLevel() {
       const response = await fetch("http://127.0.0.1:5000/members");
       const jsonData = await response.json();
       setData(jsonData);
-      console.log(data);
+
+      if (jsonData.predicted_class !== undefined) {
+        const classToLabel = {
+          0: "Underweight",
+          1: "Normal Weight",
+          2: "Obesity 1",
+          3: "Obesity 2",
+          4: "Obesity 3",
+          5: "Overweight 1",
+          6: "Overweight 2",
+          10: "",
+        };
+        const newPredictedLabel = classToLabel[jsonData.predicted_class];
+
+        setPredictedLabel(newPredictedLabel);
+      }
     } catch (error) {
       console.error(error);
     }
   };
-
-  // const handleSubmit = async () => {
-  //   // Create an object to hold the data you want to send
-  //   const dataToSend = {
-  //     o_sex: inputValuesO.o_sex,
-  //     o_age: inputValuesO.o_age,
-  //     o_weight: inputValuesO.o_weight,
-  //     o_height: inputValuesO.o_height,
-  //     o_family_history: inputValuesO.o_family_history,
-  //     o_favc: inputValuesO.o_favc,
-  //     o_fcvc: inputValuesO.o_fcvc,
-  //     o_ncp: inputValuesO.o_ncp,
-  //     o_smoke: inputValuesO.o_smoke,
-  //     o_caec: inputValuesO.o_caec,
-  //     o_ch20: inputValuesO.o_ch20,
-  //     o_calc: inputValuesO.o_calc,
-  //     o_scc: inputValuesO.o_scc,
-  //     o_faf: inputValuesO.o_faf,
-  //     o_tue: inputValuesO.o_tue,
-  //     o_mtrans: inputValuesO.o_mtrans,
-  //   };
-
-  //   try {
-  //     const response = await fetch("/api/obesity-level/", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(dataToSend),
-  //     });
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setPredictedLabel(data.predicted_label); // Set the predicted label in state
-  //     } else {
-  //       const errorData = await response.json();
-  //       console.error("Error:", errorData);
-  //     }
-  //   } catch (error) {
-  //     console.error("Fetch Error:", error);
-  //   }
-  // };
 
   const handleSubmit = async () => {
     const dataToSend = {
@@ -99,6 +73,8 @@ function ObesityLevel() {
       o_mtrans: inputValuesO.o_mtrans,
     };
 
+    console.log("Data to Send", dataToSend);
+
     try {
       const response = await fetch("http://127.0.0.1:5000/members", {
         method: "POST",
@@ -107,52 +83,61 @@ function ObesityLevel() {
         },
         body: JSON.stringify(dataToSend),
       });
-  
       if (response.ok) {
         const data = await response.json();
-  
+
         if (data.message) {
-          console.log("Success:", data.message);
+          console.log("Success", data.message);
+          console.log("Predicted Class", data.predicted_class);
+
+          const classToLabel = {
+            0: "Underweight",
+            1: "Normal Weight",
+            2: "Obesity 1",
+            3: "Obesity 2",
+            4: "Obesity 3",
+            5: "Overweight 1",
+            6: "Overweight 2",
+            10: "",
+          };
+
+          const newPredictedLabel = classToLabel[data.predicted_class];
+
+          setPredictedLabel(newPredictedLabel);
         } else {
-          console.error("Error: Unexpected response format");
+          console.error("Error: Unexcepted response format");
         }
       } else {
         const errorData = await response.json();
-        console.error("Error:", errorData);
+        console.error("Error", errorData);
       }
     } catch (error) {
       console.error("Fetch Error:", error.message);
     }
   };
 
-  // // Scale a value to a 0-5 range based on min and max values
-  const scaleTo05 = (value, minValue, maxValue) => {
-    const scaledValue = ((value - minValue) / (maxValue - minValue)) * 5;
-    return Math.min(Math.max(scaledValue, 0), 5);
-  };
-
-  const scaleAge = (value) => scaleTo05(value, 14.0, 61.0);
-  const scaleWeight = (value) => scaleTo05(value, 39.0, 173.0);
-  const scaleHeight = (value) => scaleTo05(value, 1.45, 1.98);
-
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
 
-    let scaledValue = value;
+    let parsedValue;
 
     if (type === "number") {
-      if (name === "o_age") {
-        scaledValue = scaleAge(parseFloat(value));
-      } else if (name === "o_weight") {
-        scaledValue = scaleWeight(parseFloat(value));
-      } else if (name === "o_height") {
-        scaledValue = scaleHeight(parseFloat(value));
-      }
+      parsedValue =
+        name === "o_age" ||
+        name === "o_weight" ||
+        name === "o_height" ||
+        name === "o_ch20" ||
+        name === "o_caec" ||
+        name === "o_tue"
+          ? parseFloat(value)
+          : parseInt(value, 10);
+    } else {
+      parsedValue = parseInt(value, 10);
     }
 
     setInputValues((prevValues) => ({
       ...prevValues,
-      [name]: scaledValue,
+      [name]: parsedValue,
     }));
   };
 

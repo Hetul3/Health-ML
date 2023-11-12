@@ -117,22 +117,23 @@ def members3():
         try:
             request_data = request.get_json()
             
-            h_age = request_data.get('h_age', 0)
-            h_sex = request_data.get('h_sex', 0)
-            h_cp = request_data.get('h_cp', 0)
-            h_trestbps = request_data.get('h_trestbps', 0)
-            h_chol = request_data.get('h_chol', 0)
-            h_fbs = request_data.get('h_fbs', 0)
-            h_restecg = request_data.get('h_restecg', 0)
-            h_thalach = request_data.get('h_thalach', 0)
-            h_exang = request_data.get('h_exang', 0)
-            h_oldpeak = request_data.get('h_oldpeak', 0.0)
-            h_slope = request_data.get('h_slope', 0)
-            h_ca = request_data.get('h_ca', 0)
-            h_thal = request_data.get('h_thal', 0)
             
-            input_data_h = np.array([[h_age, h_sex, h_cp, h_trestbps, h_chol, h_fbs, h_restecg, h_thalach, h_exang, h_oldpeak, h_slope, h_ca, h_thal]])
-            predictions = hd_model.predict(input_data_h)
+            b_age = request_data.get('b_age', 0)
+            b_menopause = request_data.get('b_menopause', 0)
+            b_tumor_size = request_data.get('b_tumor_size', 0)
+            b_inv_nodes = request_data.get('b_inv_nodes', 0)
+            b_node_cap = request_data.get('b_node_cap', 0)
+            b_deg_malig = request_data.get('b_deg_malig', 0)
+            b_breast = request_data.get('b_breast', 0)
+            b_breast_quad = request_data.get('b_breast_quad', 0)
+            b_irradiat = request_data.get('b_irradiat', 0)
+            
+            b_age = b_age/10
+            b_tumor_size = b_tumor_size/5
+            b_inv_nodes = b_inv_nodes/3
+            
+            input_data_b = np.array([[b_age, b_menopause, b_tumor_size, b_inv_nodes, b_node_cap, b_deg_malig, b_breast, b_breast_quad, b_irradiat]])
+            predictions = hd_model.predict(input_data_b)
             predicted_class = int(np.argmax(predictions, axis=1)[0])
             
             received_data.update({"predicted_class": predicted_class})

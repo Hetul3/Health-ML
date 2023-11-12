@@ -104,9 +104,7 @@ function HeartDisease() {
 
     if (type === "number") {
       parsedValue =
-        name === "h_oldpeak"
-          ? parseFloat(value)
-          : parseInt(value, 10);
+        name === "h_oldpeak" ? parseFloat(value) : parseInt(value, 10);
     } else {
       parsedValue = parseInt(value, 10);
     }
@@ -120,6 +118,9 @@ function HeartDisease() {
   return (
     <div>
       <h1>Heart Disease Page</h1>
+      <h1>{data.members}</h1>
+      <p>This is the Heart Disease page content.</p>
+      <p>Predicted class: {predictedLabel}</p>
       <p>This is the Heart Disease page content.</p>
 
       <p>Input your Age</p>
@@ -266,6 +267,8 @@ function HeartDisease() {
         <option value={6}>Fixed Defect</option>
         <option value={7}>Reversible Defect</option>
       </select>
+      <button onClick={handleSubmit}>Submit</button>
+      <p>Predicted Obesity Level: {predictedLabel}</p>
     </div>
   );
 }
