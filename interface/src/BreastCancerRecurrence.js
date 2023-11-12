@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function BreastCancerRecurrence() {
   const [inputValuesB, setInputValues] = useState({
@@ -8,76 +8,106 @@ function BreastCancerRecurrence() {
     b_tumor_size: 0,
     b_inv_nodes: 0,
     b_node_cap: 0,
-    b_dep_malig: 0,
+    b_deg_malig: 0,
     b_breast: 0,
     b_breast_quad: 0,
     b_irradiat: 0,
   });
 
+  const [predictedLabel, setPredictedLabel] = useState(10);
+  const [data, setData] = useState({});
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/members3");
+      const jsonData = await response.json();
+      setData(jsonData);
+
+      if (jsonData.predicted_class !== undefined) {
+        const classToLabel = {
+          0: "No reaccurance events",
+          1: "Reaccurance events",
+        };
+        const newPredictedLabel = classToLabel[jsonData.predicted_class];
+
+        setPredictedLabel(newPredictedLabel);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const dataToSend = {
+      b_age: inputValuesB.b_age,
+      b_menopause: inputValuesB.b_menopause,
+      b_tumor_size: inputValuesB.b_tumor_size,
+      b_inv_nodes: inputValuesB.b_inv_nodes,
+      b_node_cap: inputValuesB.b_node_cap,
+      b_deg_malig: inputValuesB.b_deg_malig,
+      b_breast: inputValuesB.b_breast,
+      b_breast_quad: inputValuesB.b_breast_quad,
+      b_irradiat: inputValuesB.b_irradiat,
+    };
+
+    console.log("Data to Send", dataToSend);
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/members3", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.message) {
+          console.log("Success", data.message);
+          console.log("Predicted Class", data.predicted_class);
+
+          const classToLabel = {
+            0: "No reaccurance events",
+            1: "Reaccurance events",
+          };
+
+          const newPredictedLabel = classToLabel[data.predicted_class];
+
+          setPredictedLabel(newPredictedLabel);
+        } else {
+          console.error("Error: Unexcepted response format");
+        }
+      } else {
+        const errorData = await response.json();
+        console.error("Error", errorData);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error.message);
+    }
+  };
+
   const handleInputChange = (event) => {
     const { name, value, type } = event.target;
 
-    //check if it's the integer input to minipulate it
-    if (name === "b_age") {
-      //10 for radix, needed
-      const val = parseInt(value, 10);
-
-      if (!isNaN(val) && val >= 0 && val <= 100) {
-        setInputValues((prevValues) => ({
-          ...prevValues,
-          [name]: val / 10,
-        }));
-      }
-    } else if (name === "b_tumor_size") {
-      const val = parseInt(value, 10);
-      if (!isNaN(val) && val >= 0 && val <= 59) {
-        setInputValues((prevValues) => ({
-          ...prevValues,
-          [name]: val / 5,
-        }));
-      }
-    } else if (name === "b_inv_nodes") {
-      const val = parseInt(value, 10);
-      if (!isNaN(val) && val >= 0 && val <= 39) {
-        setInputValues((prevValues) => ({
-          ...prevValues,
-          [name]: val / 3,
-        }));
-      }
-    }
+    let parsedValue;
+    parsedValue = parseInt(value, 10);
 
     setInputValues((prevValues) => ({
       ...prevValues,
-      [name]: type === "number" ? parseFloat(value) : value,
+      [name]: parsedValue,
     }));
   };
-
-  const sendInputs = () => {
-    // Create a JSON representation of the inputValuesB object
-    const jsonData = JSON.stringify(inputValuesB);
-  
-    // Make a POST request to your Django server
-    fetch('/api/endpoint', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Handle the response from the server
-        console.log('Response from server:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  };
-  
 
   return (
     <div>
       <h1>Breast Cancer Recurrence Page</h1>
+      <h1>{data.members}</h1>
+      <p>This is the Heart Disease page content.</p>
+      <p>Predicted class: {predictedLabel}</p>
       <p>This is the Breast Cancer Recurrence page content.</p>
 
       <p>What is your age</p>
@@ -87,7 +117,7 @@ function BreastCancerRecurrence() {
         placeholder="Enter a value"
         value={inputValuesB.b_age}
         onChange={handleInputChange}
-        min="0"
+        min="30"
         max="100"
       />
 
@@ -137,7 +167,7 @@ function BreastCancerRecurrence() {
       <p>Degree of Maligency</p>
       <select
         name="b_deg_malig"
-        value={inputValuesB.b_dep_malig}
+        value={inputValuesB.b_deg_malig}
         onChange={handleInputChange}
       >
         <option value={0}>Grade 1</option>
@@ -176,8 +206,9 @@ function BreastCancerRecurrence() {
         <option value={0}>No</option>
         <option value={1}>Yes</option>
       </select>
-
-      <button onClick={sendInputs}>Send Data</button>
+      
+      <button onClick={handleSubmit}>Submit</button>
+      <p>Predicted Obesity Level: {predictedLabel}</p>
     </div>
   );
 }
