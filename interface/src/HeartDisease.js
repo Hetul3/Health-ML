@@ -27,6 +27,10 @@ function HeartDisease() {
     setCurrentForm((prevForm) => prevForm + 1);
   };
 
+  const handleBack = () => {
+    setCurrentForm((prevForm) => Math.max(prevForm - 1, 1));
+  };
+
   const renderForm = () => {
     switch (currentForm) {
       case 1:
@@ -508,6 +512,10 @@ function HeartDisease() {
       <p>Predicted class: {predictedLabel}</p>
 
       {renderForm()}
+
+      <button onClick={handleBack} disabled={currentForm === 1}>
+        Back
+      </button>
 
       {currentForm < MAX_FORMS && <button onClick={handleNext}>Next</button>}
 

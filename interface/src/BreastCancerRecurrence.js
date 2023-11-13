@@ -16,6 +16,168 @@ function BreastCancerRecurrence() {
 
   const [predictedLabel, setPredictedLabel] = useState(10);
   const [data, setData] = useState({});
+  const [currentForm, setCurrentForm] = useState(1);
+  const MAX_FORMS = 9;
+
+  const handleNext = () => {
+    setCurrentForm((prevForm) => prevForm + 1);
+  };
+
+  const handleBack = () => {
+    setCurrentForm((prevForm) => Math.max(prevForm - 1, 1));
+  };
+
+  const renderForm = () => {
+    switch (currentForm) {
+      case 1:
+        return (
+          <div>
+            <p>What is your age</p>
+            <input
+              type="number"
+              name="b_age"
+              placeholder="Enter a value"
+              value={inputValuesB.b_age}
+              onChange={handleInputChange}
+              min="30"
+              max="100"
+            />
+            {/* ... other inputs for Form 1 */}
+          </div>
+        );
+      case 2:
+        return (
+          <div>
+            <p>What is your Menopause status</p>
+            <select
+              name="b_menopause"
+              value={inputValuesB.b_menopause}
+              onChange={handleInputChange}
+            >
+              <option value={0}>Less than 40</option>
+              <option value={1}>Greater than or equal to 40</option>
+              <option value={2}>Premenopause</option>
+            </select>
+            {/* ... other inputs for Form 2 */}
+          </div>
+        );
+      case 3:
+        return (
+          <div>
+            <p>What is the tumour size</p>
+            <input
+              type="number"
+              name="b_tumor_size"
+              placeholder="Enter a value"
+              value={inputValuesB.b_tumor_size}
+              onChange={handleInputChange}
+              min="0"
+              max="59"
+            />
+            {/* ... other inputs for Form 2 */}
+          </div>
+        );
+      case 4:
+        return (
+          <div>
+            <p>What are the Involved Lymph Nodes</p>
+            <input
+              type="number"
+              name="b_inv_nodes"
+              palceholder="Enter a value"
+              value={inputValuesB.b_inv_nodes}
+              onChange={handleInputChange}
+              min="0"
+              max="39"
+            />
+            {/* ... other inputs for Form 2 */}
+          </div>
+        );
+      case 5:
+        return (
+          <div>
+            <p>Has it Penetrated the Capsule of at Least One Lymph Node</p>
+            <select
+              name="b_node_cap"
+              value={inputValuesB.b_node_cap}
+              onChange={handleInputChange}
+            >
+              <option value={0}>No</option>
+              <option value={1}>Yes</option>
+            </select>
+            {/* ... other inputs for Form 2 */}
+          </div>
+        );
+      case 6:
+        return (
+          <div>
+            <p>Degree of Maligency</p>
+            <select
+              name="b_deg_malig"
+              value={inputValuesB.b_deg_malig}
+              onChange={handleInputChange}
+            >
+              <option value={0}>Grade 1</option>
+              <option value={1}>Grade 2</option>
+              <option value={2}>Grade 3</option>
+            </select>
+            {/* ... other inputs for Form 2 */}
+          </div>
+        );
+      case 7:
+        return (
+          <div>
+            <p>Which Breast Has Been Impacted</p>
+            <select
+              name="b_breast"
+              value={inputValuesB.b_breast}
+              onChange={handleInputChange}
+            >
+              <option value={0}>Left</option>
+              <option value={1}>Right</option>
+            </select>
+            {/* ... other inputs for Form 2 */}
+          </div>
+        );
+      case 8:
+        return (
+          <div>
+            <p>Which Quad Has Been Impacted</p>
+            <select
+              name="b_breast_quad"
+              value={inputValuesB.b_breast_quad}
+              onChange={handleInputChange}
+            >
+              <option value={1}>Left-Up</option>
+              <option value={2}>Left-Low</option>
+              <option value={3}>Right-Up</option>
+              <option value={4}>Right-Low</option>
+              <option value={5}>Central</option>
+            </select>
+            {/* ... other inputs for Form 2 */}
+          </div>
+        );
+      case 9:
+        return (
+          <div>
+            <p>Was Radiation Therapy Used?</p>
+            <select
+              name="b_irradiat"
+              value={inputValuesB.b_irradiat}
+              onChange={handleInputChange}
+            >
+              <option value={0}>No</option>
+              <option value={1}>Yes</option>
+            </select>
+            {/* ... other inputs for Form 2 */}
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -109,7 +271,16 @@ function BreastCancerRecurrence() {
       <p>This is the Heart Disease page content.</p>
       <p>Predicted class: {predictedLabel}</p>
       <p>This is the Breast Cancer Recurrence page content.</p>
+      {renderForm()}
 
+      <button onClick={handleBack} disabled={currentForm === 1}>
+        Back
+      </button>
+      {currentForm < MAX_FORMS && <button onClick={handleNext}>Next</button>}
+
+      <button onClick={handleSubmit}>Submit</button>
+      <p>Predicted Obesity Level: {predictedLabel}</p>
+      {/* 
       <p>What is your age</p>
       <input
         type="number"
@@ -206,9 +377,9 @@ function BreastCancerRecurrence() {
         <option value={0}>No</option>
         <option value={1}>Yes</option>
       </select>
-      
+
       <button onClick={handleSubmit}>Submit</button>
-      <p>Predicted Obesity Level: {predictedLabel}</p>
+      <p>Predicted Obesity Level: {predictedLabel}</p> */}
     </div>
   );
 }
