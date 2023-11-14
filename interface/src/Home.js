@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 function Home() {
+  useEffect(() => {
+    document.querySelector(".home-container").classList.add("show");
+  }, []);
+
   return (
-    <div>
-      <h1>Welcome to the Home Page</h1>
-      <p>This is the home page content.</p>
+    <div className="home-container">
+      <h1 className="home-header">DiagnosAI</h1>
     </div>
   );
 }

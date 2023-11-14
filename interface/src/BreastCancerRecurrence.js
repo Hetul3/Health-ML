@@ -17,6 +17,7 @@ function BreastCancerRecurrence() {
   const [predictedLabel, setPredictedLabel] = useState(10);
   const [data, setData] = useState({});
   const [currentForm, setCurrentForm] = useState(1);
+  const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
   const MAX_FORMS = 9;
 
   const handleNext = () => {
@@ -31,8 +32,8 @@ function BreastCancerRecurrence() {
     switch (currentForm) {
       case 1:
         return (
-          <div>
-            <p>What is your age</p>
+          <div className="question-div">
+            <p className="question-p">What is your age</p>
             <input
               type="number"
               name="b_age"
@@ -47,8 +48,8 @@ function BreastCancerRecurrence() {
         );
       case 2:
         return (
-          <div>
-            <p>What is your Menopause status</p>
+          <div className="question-div">
+            <p className="question-p">What is your Menopause status</p>
             <select
               name="b_menopause"
               value={inputValuesB.b_menopause}
@@ -63,8 +64,8 @@ function BreastCancerRecurrence() {
         );
       case 3:
         return (
-          <div>
-            <p>What is the tumour size</p>
+          <div className="question-div">
+            <p className="question-p">What is the tumour size</p>
             <input
               type="number"
               name="b_tumor_size"
@@ -79,8 +80,8 @@ function BreastCancerRecurrence() {
         );
       case 4:
         return (
-          <div>
-            <p>What are the Involved Lymph Nodes</p>
+          <div className="question-div">
+            <p className="question-p">What are the Involved Lymph Nodes</p>
             <input
               type="number"
               name="b_inv_nodes"
@@ -95,8 +96,8 @@ function BreastCancerRecurrence() {
         );
       case 5:
         return (
-          <div>
-            <p>Has it Penetrated the Capsule of at Least One Lymph Node</p>
+          <div className="question-div">
+            <p className="question-p">Has it Penetrated the Capsule of at Least One Lymph Node</p>
             <select
               name="b_node_cap"
               value={inputValuesB.b_node_cap}
@@ -110,8 +111,8 @@ function BreastCancerRecurrence() {
         );
       case 6:
         return (
-          <div>
-            <p>Degree of Maligency</p>
+          <div className="question-div">
+            <p className="question-p">Degree of Maligency</p>
             <select
               name="b_deg_malig"
               value={inputValuesB.b_deg_malig}
@@ -126,8 +127,8 @@ function BreastCancerRecurrence() {
         );
       case 7:
         return (
-          <div>
-            <p>Which Breast Has Been Impacted</p>
+          <div className="question-div">
+            <p className="question-p">Which Breast Has Been Impacted</p>
             <select
               name="b_breast"
               value={inputValuesB.b_breast}
@@ -141,8 +142,8 @@ function BreastCancerRecurrence() {
         );
       case 8:
         return (
-          <div>
-            <p>Which Quad Has Been Impacted</p>
+          <div className="question-div">
+            <p className="question-p">Which Quad Has Been Impacted</p>
             <select
               name="b_breast_quad"
               value={inputValuesB.b_breast_quad}
@@ -159,8 +160,8 @@ function BreastCancerRecurrence() {
         );
       case 9:
         return (
-          <div>
-            <p>Was Radiation Therapy Used?</p>
+          <div className="question-div">
+            <p className="question-p">Was Radiation Therapy Used?</p>
             <select
               name="b_irradiat"
               value={inputValuesB.b_irradiat}
@@ -231,6 +232,7 @@ function BreastCancerRecurrence() {
         if (data.message) {
           console.log("Success", data.message);
           console.log("Predicted Class", data.predicted_class);
+          setSubmitButtonClicked(true);
 
           const classToLabel = {
             0: "No reaccurance events",
@@ -266,120 +268,32 @@ function BreastCancerRecurrence() {
 
   return (
     <div>
-      <h1>Breast Cancer Recurrence Page</h1>
-      <h1>{data.members}</h1>
-      <p>This is the Heart Disease page content.</p>
-      <p>Predicted class: {predictedLabel}</p>
-      <p>This is the Breast Cancer Recurrence page content.</p>
+      <h1 className="page-header">Breast Cancer Reaccurance</h1>
+
       {renderForm()}
+      <div className="button-container">
+        <button
+          className="button button-back"
+          onClick={handleBack}
+          disabled={currentForm === 1}
+        >
+          Back
+        </button>
+        {currentForm < MAX_FORMS && (
+          <button className="button button-next" onClick={handleNext}>
+            Next
+          </button>
+        )}
+        {currentForm === MAX_FORMS && (
+          <button className="button button-submit" onClick={handleSubmit}>
+            Submit
+          </button>
+        )}
+      </div>
 
-      <button onClick={handleBack} disabled={currentForm === 1}>
-        Back
-      </button>
-      {currentForm < MAX_FORMS && <button onClick={handleNext}>Next</button>}
-
-      <button onClick={handleSubmit}>Submit</button>
-      <p>Predicted Obesity Level: {predictedLabel}</p>
-      {/* 
-      <p>What is your age</p>
-      <input
-        type="number"
-        name="b_age"
-        placeholder="Enter a value"
-        value={inputValuesB.b_age}
-        onChange={handleInputChange}
-        min="30"
-        max="100"
-      />
-
-      <p>What is your Menopause status</p>
-      <select
-        name="b_menopause"
-        value={inputValuesB.b_menopause}
-        onChange={handleInputChange}
-      >
-        <option value={0}>Less than 40</option>
-        <option value={1}>Greater than or equal to 40</option>
-        <option value={2}>Premenopause</option>
-      </select>
-
-      <p>What is the tumour size</p>
-      <input
-        type="number"
-        name="b_tumor_size"
-        placeholder="Enter a value"
-        value={inputValuesB.b_tumor_size}
-        onChange={handleInputChange}
-        min="0"
-        max="59"
-      />
-
-      <p>What are the Involved Lymph Nodes</p>
-      <input
-        type="number"
-        name="b_inv_nodes"
-        palceholder="Enter a value"
-        value={inputValuesB.b_inv_nodes}
-        onChange={handleInputChange}
-        min="0"
-        max="39"
-      />
-
-      <p>Has it Penetrated the Capsule of at Least One Lymph Node</p>
-      <select
-        name="b_node_cap"
-        value={inputValuesB.b_node_cap}
-        onChange={handleInputChange}
-      >
-        <option value={0}>No</option>
-        <option value={1}>Yes</option>
-      </select>
-
-      <p>Degree of Maligency</p>
-      <select
-        name="b_deg_malig"
-        value={inputValuesB.b_deg_malig}
-        onChange={handleInputChange}
-      >
-        <option value={0}>Grade 1</option>
-        <option value={1}>Grade 2</option>
-        <option value={2}>Grade 3</option>
-      </select>
-
-      <p>Which Breast Has Been Impacted</p>
-      <select
-        name="b_breast"
-        value={inputValuesB.b_breast}
-        onChange={handleInputChange}
-      >
-        <option value={0}>Left</option>
-        <option value={1}>Right</option>
-      </select>
-      <p>Which Quad Has Been Impacted</p>
-      <select
-        name="b_breast_quad"
-        value={inputValuesB.b_breast_quad}
-        onChange={handleInputChange}
-      >
-        <option value={1}>Left-Up</option>
-        <option value={2}>Left-Low</option>
-        <option value={3}>Right-Up</option>
-        <option value={4}>Right-Low</option>
-        <option value={5}>Central</option>
-      </select>
-
-      <p>Was Radiation Therapy Used?</p>
-      <select
-        name="b_irradiat"
-        value={inputValuesB.b_irradiat}
-        onChange={handleInputChange}
-      >
-        <option value={0}>No</option>
-        <option value={1}>Yes</option>
-      </select>
-
-      <button onClick={handleSubmit}>Submit</button>
-      <p>Predicted Obesity Level: {predictedLabel}</p> */}
+      {submitButtonClicked && (
+       <p className={`predicted-value ${predictedLabel ? 'show' : ''}`}>Predicted class: {predictedLabel}</p>
+      )}
     </div>
   );
 }

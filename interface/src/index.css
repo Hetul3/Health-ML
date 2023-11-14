@@ -1,20 +1,18 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
- }
- 
- 
- code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
- }
- 
- 
- .nav-container {
+}
+
+.nav-container {
   background-color: #f0f0f0;
   border-radius: 10px;
   padding: 10px;
@@ -51,23 +49,157 @@ body {
 }
 
 .top-navbar {
-  background-color: #f0f0f0; 
+  background-color: #f0f0f0;
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   padding: 10px;
-  align-items: center; 
+  align-items: center;
   justify-content: center;
 }
 
- 
- .home-container {
+.home-container {
   text-align: center;
   margin-top: 100px;
- }
+}
 
- .home-header-text {
+.home-header-text {
   font-size: 24px;
   color: #333;
   font-weight: bold;
- }
- 
+}
+/* Add these styles to your existing CSS or create a new CSS file */
+.page-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.question-div {
+  margin: 40px;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  background-color: #c9a0e1; /* Off purple color */
+  width: 500px;
+  margin: 0 auto; /* Center horizontally */
+  text-align: center; /* Center the content within the div */
+}
+.question-div input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px; /* Adjust the font size as needed */
+  text-align: center; /* Center the text horizontally */
+}
+
+/* Style for select dropdown */
+.question-div select {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px; /* Adjust the font size as needed */
+  text-align: center; /* Center the text horizontally */
+  background-color: white;
+}
+
+.question-p {
+  font-weight: bold;
+}
+
+.question-div input,
+.question-div select {
+  margin-top: 10px;
+}
+
+.predicted-value {
+  margin-top: 20px;
+  font-weight: bold;
+}
+/* Center the buttons horizontally with 20px margin between them */
+.button-container {
+  text-align: center;
+}
+
+.button {
+  margin: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.button-back {
+  background-color: #4caf50; 
+  color: white;
+}
+
+.button-next {
+  background-color: #3498db; 
+  color: white;
+}
+
+.button-submit {
+  background-color: #e74c3c; 
+  color: white;
+}
+
+
+/* Hover effect for buttons */
+.button:hover {
+  transform: translate(2px, 3px);
+  box-shadow: none;
+}
+
+/* Disable the hover effect when the button is disabled */
+.button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.predicted-value {
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out; /* Adjust the duration and easing as needed */
+}
+
+.predicted-value.show {
+  opacity: 1;
+}
+
+/* Add this style to your existing CSS or create a new CSS file */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif; /* Change the font as needed */
+  background: linear-gradient(to bottom right, #6c63ff, #8250c8);
+  /* Adjust the gradient colors as needed */
+  min-height: 100vh;
+  color: #fff; /* Set text color to white for better contrast */
+}
+.home-container {
+  text-align: center;
+  margin-top: 200px; /* Initial position at the vertical center of the viewport */
+  opacity: 0; /* Initially not visible */
+  transition: margin-top 2s, opacity 3s;
+}
+
+.home-header {
+  font-size: 7.5em; /* Larger font size */
+  background: linear-gradient(to right, #ffffff, rgb(78, 95, 220)); /* Gradient for text, adjusted colors */
+  -webkit-background-clip: text; 
+  color: transparent; 
+}
+
+.home-container.show {
+  margin-top: 20px; /* Smaller upward translation */
+  opacity: 1; /* Make visible */
+}
