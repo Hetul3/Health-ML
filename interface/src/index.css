@@ -174,26 +174,25 @@ code {
   opacity: 1;
 }
 
-/* Add this style to your existing CSS or create a new CSS file */
+
 
 body {
   margin: 0;
   padding: 0;
-  font-family: "Arial", sans-serif; /* Change the font as needed */
+  font-family: "Arial", sans-serif; 
   background: linear-gradient(to bottom right, #6c63ff, #8250c8);
-  /* Adjust the gradient colors as needed */
   min-height: 100vh;
-  color: #fff; /* Set text color to white for better contrast */
+  color: #fff; 
 }
 .home-container {
   text-align: center;
-  margin-top: 200px; /* Initial position at the vertical center of the viewport */
-  opacity: 0; /* Initially not visible */
+  margin-top: 200px; 
+  opacity: 0; 
   transition: margin-top 2s, opacity 3s;
 }
 
 .home-header {
-  font-size: 7.5em; /* Larger font size */
+  font-size: 7.5em; 
   background: linear-gradient(to right, #ffffff, rgb(78, 95, 220)); /* Gradient for text, adjusted colors */
   -webkit-background-clip: text; 
   color: transparent; 

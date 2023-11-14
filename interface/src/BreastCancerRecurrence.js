@@ -18,6 +18,7 @@ function BreastCancerRecurrence() {
   const [data, setData] = useState({});
   const [currentForm, setCurrentForm] = useState(1);
   const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
+  const [predictedProbability, setPredictedProbability] = useState(0.0);
   const MAX_FORMS = 9;
 
   const handleNext = () => {
@@ -97,7 +98,9 @@ function BreastCancerRecurrence() {
       case 5:
         return (
           <div className="question-div">
-            <p className="question-p">Has it Penetrated the Capsule of at Least One Lymph Node</p>
+            <p className="question-p">
+              Has it Penetrated the Capsule of at Least One Lymph Node
+            </p>
             <select
               name="b_node_cap"
               value={inputValuesB.b_node_cap}
@@ -232,6 +235,7 @@ function BreastCancerRecurrence() {
         if (data.message) {
           console.log("Success", data.message);
           console.log("Predicted Class", data.predicted_class);
+          console.log("Predicted probaility", data.prediction_probability);
           setSubmitButtonClicked(true);
 
           const classToLabel = {
@@ -240,7 +244,10 @@ function BreastCancerRecurrence() {
           };
 
           const newPredictedLabel = classToLabel[data.predicted_class];
+          const predictionProbability = data.prediction_probability;
+          const formattedProbability = (predictionProbability * 100).toFixed(1);
 
+          setPredictedProbability(formattedProbability);
           setPredictedLabel(newPredictedLabel);
         } else {
           console.error("Error: Unexcepted response format");
@@ -292,7 +299,11 @@ function BreastCancerRecurrence() {
       </div>
 
       {submitButtonClicked && (
-       <p className={`predicted-value ${predictedLabel ? 'show' : ''}`}>Predicted class: {predictedLabel}</p>
+        <p className={`predicted-value ${predictedLabel ? "show" : ""}`}>
+          Predicted class: {predictedLabel}
+          <br />
+          Model Probability: {predictedProbability}%
+        </p>
       )}
     </div>
   );

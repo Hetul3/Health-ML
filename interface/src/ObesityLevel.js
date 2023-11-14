@@ -24,6 +24,7 @@ function ObesityLevel() {
   const [data, setData] = useState({});
   const [currentForm, setCurrentForm] = useState(1);
   const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
+  const [predictedProbability, setPredictedProbability] = useState(0.0);
   const MAX_FORMS = 16;
 
   const handleNext = () => {
@@ -105,7 +106,9 @@ function ObesityLevel() {
       case 5:
         return (
           <div className="question-div">
-            <p className="question-p">Do you Have a Family History with Obesity</p>
+            <p className="question-p">
+              Do you Have a Family History with Obesity
+            </p>
             <select
               name="o_family_history"
               value={inputValuesO.o_family_history}
@@ -120,7 +123,9 @@ function ObesityLevel() {
       case 6:
         return (
           <div className="question-div">
-            <p className="question-p">Do you Frequently Consume High-Calorie Meals?</p>
+            <p className="question-p">
+              Do you Frequently Consume High-Calorie Meals?
+            </p>
             <select
               name="o_favc"
               value={inputValuesO.o_favc}
@@ -135,7 +140,9 @@ function ObesityLevel() {
       case 7:
         return (
           <div className="question-div">
-            <p className="question-p">Do you Have Frequent Consumption of Vegetables and Fruits</p>
+            <p className="question-p">
+              Do you Have Frequent Consumption of Vegetables and Fruits
+            </p>
             <select
               name="o_fcvc"
               value={inputValuesO.o_fcvc}
@@ -198,7 +205,9 @@ function ObesityLevel() {
       case 11:
         return (
           <div className="question-div">
-            <p className="question-p">How Much Liquid Water do you Drink Everyday</p>
+            <p className="question-p">
+              How Much Liquid Water do you Drink Everyday (Liters)
+            </p>
             <input
               type="number"
               name="o_ch20"
@@ -247,7 +256,9 @@ function ObesityLevel() {
       case 14:
         return (
           <div className="question-div">
-            <p className="question-p">What is Your Physical Activity per Week</p>
+            <p className="question-p">
+              What is Your Physical Activity per Week
+            </p>
             <select
               name="o_faf"
               value={inputValuesO.o_faf}
@@ -258,26 +269,26 @@ function ObesityLevel() {
               <option value={2}>{"3-4 Days a Week"}</option>
               <option value={3}>{">4 Days a Week"}</option>
             </select>
-            {/* ... other inputs for Form 2 */}
           </div>
         );
       case 15:
         return (
           <div className="question-div">
-            <p className="question-p">What is Your Time Using Devices Per Day</p>
+            <p className="question-p">
+              What is Your Time Using Devices Per Day
+            </p>
             <select
               name="o_tue"
               value={inputValuesO.o_tue}
               onChange={handleInputChange}
               step="0.5"
             >
-              <option value={0.0}>{"0-2 Hours"}</option>
-              <option value={0.5}>{"3 Hours"}</option>
-              <option value={1.0}>{"4 Hours"}</option>
-              <option value={1.5}>{"5 Hours"}</option>
+              <option value={0.0}>0-2 Hours</option>
+              <option value={0.5}>3 Hours</option>
+              <option value={1.0}>4 Hours</option>
+              <option value={1.5}>5 Hours</option>
               <option value={2.0}>{">5 Hours"}</option>
             </select>
-            {/* ... other inputs for Form 2 */}
           </div>
         );
       case 16:
@@ -375,6 +386,7 @@ function ObesityLevel() {
         if (data.message) {
           console.log("Success:", data.message);
           console.log("Predicted Class:", data.predicted_class); // Log predicted_class
+          console.log("Predicted probaility", data.prediction_probability);
           setSubmitButtonClicked(true);
           const classToLabel = {
             0: "Underweight",
@@ -388,8 +400,12 @@ function ObesityLevel() {
           };
 
           const newPredictedLabel = classToLabel[data.predicted_class];
+          const predictionProbability = data.prediction_probability;
+          const formattedProbability = (predictionProbability * 100).toFixed(1);
 
-          // Set the predictedLabel state
+          setPredictedProbability(formattedProbability);
+
+
           setPredictedLabel(newPredictedLabel);
         } else {
           console.error("Error: Unexpected response format");
@@ -453,7 +469,11 @@ function ObesityLevel() {
       </div>
 
       {submitButtonClicked && (
-       <p className={`predicted-value ${predictedLabel ? 'show' : ''}`}>Predicted class: {predictedLabel}</p>
+        <p className={`predicted-value ${predictedLabel ? "show" : ""}`}>
+          Predicted class: {predictedLabel}
+          <br />
+          Model Probability: {predictedProbability}%
+        </p>
       )}
     </div>
   );

@@ -22,6 +22,7 @@ function HeartDisease() {
   const [data, setData] = useState({});
   const [currentForm, setCurrentForm] = useState(1);
   const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
+  const [predictedProbability, setPredictedProbability] = useState(0.0);
   const MAX_FORMS = 13;
 
   const handleNext = () => {
@@ -308,6 +309,7 @@ function HeartDisease() {
         if (data.message) {
           console.log("Success", data.message);
           console.log("Predicted Class", data.predicted_class);
+          console.log("Predicted probaility", data.prediction_probability);
           setSubmitButtonClicked(true);
           const classToLabel = {
             0: "<50% narrowing",
@@ -315,6 +317,10 @@ function HeartDisease() {
           };
 
           const newPredictedLabel = classToLabel[data.predicted_class];
+          const predictionProbability = data.prediction_probability;
+          const formattedProbability = (predictionProbability * 100).toFixed(1);
+
+          setPredictedProbability(formattedProbability);
 
           setPredictedLabel(newPredictedLabel);
         } else {
@@ -372,7 +378,11 @@ function HeartDisease() {
       </div>
 
       {submitButtonClicked && (
-       <p className={`predicted-value ${predictedLabel ? 'show' : ''}`}>Predicted class: {predictedLabel}</p>
+        <p className={`predicted-value ${predictedLabel ? "show" : ""}`}>
+          Predicted class: {predictedLabel}
+          <br />
+          Model Probability: {predictedProbability}%
+        </p>
       )}
     </div>
   );

@@ -58,13 +58,15 @@ def members():
             input_data_ob = np.array([[o_sex, scaled_age, scaled_height, scaled_weight, o_family_history, o_favc, o_fcvc, o_ncp, o_caec, o_smoke, o_ch20, o_scc, o_faf, o_tue, o_calc, o_mtrans]])
             predictions = ob_model.predict(input_data_ob)
             predicted_class = int(np.argmax(predictions, axis=1)[0])
+            prediction_probability = float(np.max(predictions, axis=1)[0])
 
             # Update received_data with the prediction
             received_data.update({"predicted_class": predicted_class})
 
             return jsonify({
                 "message": "Data received and processed successfully",
-                "predicted_class": predicted_class
+                "predicted_class": predicted_class,
+                "prediction_probability": prediction_probability
             })
             
         except Exception as e:
@@ -96,12 +98,14 @@ def members2():
             input_data_h = np.array([[h_age, h_sex, h_cp, h_trestbps, h_chol, h_fbs, h_restecg, h_thalach, h_exang, h_oldpeak, h_slope, h_ca, h_thal]])
             predictions = hd_model.predict(input_data_h)
             predicted_class = int(np.argmax(predictions, axis=1)[0])
+            prediction_probability = float(np.max(predictions, axis=1)[0])
             
             received_data.update({"predicted_class": predicted_class})
             
             return jsonify({
                 "message": "Data received and processed successfully h",
-                "predicted_class": predicted_class
+                "predicted_class": predicted_class,
+                "prediction_probability": prediction_probability
             })
             
         except Exception as e:
@@ -133,12 +137,14 @@ def members3():
             input_data_b = np.array([[b_age, b_menopause, b_tumor_size, b_inv_nodes, b_node_cap, b_deg_malig, b_breast, b_breast_quad, b_irradiat]])
             predictions = b_model.predict(input_data_b)
             predicted_class = int(np.argmax(predictions, axis=1)[0])
+            prediction_probability = float(np.max(predictions, axis=1)[0])
             
             received_data.update({"predicted_class": predicted_class})
             
             return jsonify({
                 "message": "Data received and processed successfully b",
-                "predicted_class": predicted_class
+                "predicted_class": predicted_class,
+                "prediction_probability": prediction_probability
             })
         except Exception as e:
             return jsonify({"error": str(e)}), 400
